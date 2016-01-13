@@ -11,6 +11,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     CONFIG: {
       headers: {}
     }
+  })
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
