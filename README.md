@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Ionic App Base
 =====================
 
@@ -23,3 +24,7 @@ More info on this can be found on the Ionic [Getting Started](http://ionicframew
 
 ## Issues
 Issues have been disabled on this repo, if you do find an issue or have a question consider posting it on the [Ionic Forum](http://forum.ionicframework.com/).  Or else if there is truly an error, follow our guidelines for [submitting an issue](http://ionicframework.com/submit-issue/) to the main Ionic repository.
+=======
+# pee_buddy_ui
+ionic ui for pee buddy - a bathroom finder app
+>>>>>>> 6016c34a0ed8bc6f14dc6c2e61146283cd32ff24
