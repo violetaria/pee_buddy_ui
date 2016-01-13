@@ -6,7 +6,11 @@
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngCordova'])
-
+  .constant('SERVER', {
+    URL: 'http://localhost:3000',
+    CONFIG: {
+      headers: {}
+    }
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
