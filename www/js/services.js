@@ -47,4 +47,37 @@ angular.module('starter.services', [])
       return null;
     }
   };
+})
+
+.factory('peeLocations',function($q) {
+  return {
+    nearbySearch: function(latLng,map){
+      var deferred = $q.defer();
+
+      var request = {
+        location: latLng,
+        radius: '500',
+        types: ['gas_station']
+      };
+
+      var service = new google.maps.places.PlacesService(map);
+      service.nearbySearch(request, function(results, status){
+        if(status == google.maps.places.PlacesServiceStatus.OK){
+          deferred.resolve(results);
+        }
+      }, function(error){
+        deferred.reject(error);
+      });
+
+      return deferred.promise;
+      //
+      //function callback (results,status){
+      //  if (status == google.maps.places.PlacesServiceStatus.OK) {
+      //    console.log('callback places' + results);
+      //    return results;
+      //  }
+      //}
+    }
+  }
 });
+
