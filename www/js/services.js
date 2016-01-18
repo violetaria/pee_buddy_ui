@@ -49,7 +49,24 @@ angular.module('starter.services', [])
   };
 })
 
-.factory('peeLocations',function($q) {
+.factory('UserSession', function($resource) {
+    console.log("user session factory");
+    return $resource("http://localhost:3000/api/v1/users"); // .json");
+})
+
+.factory('Users',function(){
+    return {
+      signOff: function(){
+        return null;
+
+      },
+      forgotPassword: function(){
+        return null;
+      }
+    }
+})
+
+.factory('PeeLocations',function($q) {
   return {
     nearbySearch: function(latLng,map){
       var deferred = $q.defer();

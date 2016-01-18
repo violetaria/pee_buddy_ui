@@ -1,6 +1,34 @@
 angular.module('starter.controllers', [])
+  //.constant('SERVER', {
+  //  URL: 'http://localhost:3000',
+  //  CONFIG: {
+  //    headers: {}
+  //  }
+  //})
 
-.controller('MapCtrl', function($scope, $state, $cordovaGeolocation, $ionicLoading, peeLocations) {
+  .controller('SignInCtrl', function($scope, $state, UserSession, $ionicPopup, $rootScope) {
+    $scope.data = {};
+
+    $scope.signIn = function(user) {
+        var user_session = new UserSession({user: user});
+        user_session.$save(
+          function (data) {
+            window.localStorage['username'] = data.username;
+            window.localStorage['auth_token'] = data.auth_token;
+            $state.go('tab.map');
+          },
+          function (err) {
+            var error = err["data"]["errors"]["detail"];
+            var confirmPopup = $ionicPopup.alert({
+              title: 'An error occurred',
+              template: error
+            });
+          }
+        );
+    };
+  })
+
+  .controller('MapCtrl', function($scope, $state, $cordovaGeolocation, $ionicLoading, PeeLocations) {
   ionic.Platform.ready(function () {
     $ionicLoading.show({
       template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
@@ -25,7 +53,7 @@ angular.module('starter.controllers', [])
 
         //Wait until the map is loaded
         google.maps.event.addListenerOnce($scope.map, 'idle', function () {
-          var places = peeLocations.nearbySearch(latLng,$scope.map).then(function(results) {
+          var places = PeeLocations.nearbySearch(latLng,$scope.map).then(function(results) {
             console.log('success' + results);
             for (var i = 0; i < results.length; i++) {
               var place = results[i];
@@ -78,27 +106,27 @@ angular.module('starter.controllers', [])
   })
 })
 
-.controller('FavoritesCtrl', function($scope, Chats) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
+  .controller('FavoritesCtrl', function($scope, Chats) {
+    // With the new view caching in Ionic, Controllers are only called
+    // when they are recreated or on app start, instead of every page change.
+    // To listen for when this page is active (for example, to refresh data),
+    // listen for the $ionicView.enter event:
+    //
+    //$scope.$on('$ionicView.enter', function(e) {
+    //});
 
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  };
-})
+    $scope.chats = Chats.all();
+    $scope.remove = function(chat) {
+      Chats.remove(chat);
+    };
+  })
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
-})
+  .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
+    $scope.chat = Chats.get($stateParams.chatId);
+  })
 
-.controller('AccountCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
-  };
-});
+  .controller('AccountCtrl', function($scope) {
+    $scope.settings = {
+      enableFriends: true
+    };
+  });
