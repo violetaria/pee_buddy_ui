@@ -1,0 +1,30 @@
+<ion-view view-title="Sign-In">
+  <ion-content ngController="SignInCtrl">
+    <form name="signInForm" novalidate ng-submit="signIn(user)">
+      <div class="list">
+      <label class="item item-input">
+        <span class="input-label">Username</span>
+        <input type="text" ng-model="user.username" ng-minlength="5" required>
+      </label>
+      <label class="item item-input">
+        <span class="input-label">Password</span>
+        <input type="password" ng-model="user.password" ng-minlength="4" required>
+      </label>
+    </div>
+      <div class="padding">
+        <p ng-show="signInForm.user.username.$error.required">* Username is required</p>
+        <p ng-show="signInForm.user.username.$error.minlength">* Username must be longer than 5 characters</p>
+        <p ng-show="signInForm.user.password.$error.required">* Password is required</p>
+        <p ng-show="signInForm.user.password.$error.minlength">* Password must be longer than 6 characters</p>
+      </div>
+      <div class="padding">
+        <button class="button button-block button-positive" ng-disabled="signInForm.$invalid" type="submit">
+          Sign-In
+        </button>
+        <p class="text-center">
+          <a href="#/forgot-password">Forgot password</a>
+        </p>
+      </div>
+    </form>
+  </ion-content>
+</ion-view>
