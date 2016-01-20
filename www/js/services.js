@@ -49,9 +49,10 @@ angular.module('starter.services', [])
   };
 })
 
-.factory('UserSession', function($resource) {
-    console.log("user session factory");
-    return $resource("http://localhost:3000/api/v1/users"); // .json");
+.factory('UserSession', function($resource, SERVER) {
+    console.log("user session factory" + SERVER);
+
+    return $resource(SERVER.URL + "/api/v1/users"); // .json");
 })
 
 .factory('Users',function(){

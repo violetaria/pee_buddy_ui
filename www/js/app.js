@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngCordova','ngResource'])
   .constant('SERVER', {
-    URL: 'http://localhost:3000',
+    URL: 'https://peebuddy-api.herokuapp.com',
     CONFIG: {
       headers: {}
     }

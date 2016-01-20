@@ -1,10 +1,4 @@
 angular.module('starter.controllers', [])
-  //.constant('SERVER', {
-  //  URL: 'http://localhost:3000',
-  //  CONFIG: {
-  //    headers: {}
-  //  }
-  //})
 
   .controller('SignInCtrl', function($scope, $state, UserSession, $ionicPopup, $rootScope) {
     $scope.data = {};
@@ -15,6 +9,7 @@ angular.module('starter.controllers', [])
           function (data) {
             window.localStorage['username'] = data.username;
             window.localStorage['auth_token'] = data.auth_token;
+
             $state.go('tab.map');
           },
           function (err) {
@@ -74,7 +69,20 @@ angular.module('starter.controllers', [])
 
               var popupContent = '<div class="locationContent">' +
                 '<div class="locationName">' + place.name + '</div>' +
-                  '<div>'+ place.id + '</div>' +
+                '<div class="locationPlaceId">'+ place.id + '</div>' +
+                '<div class="locationGeometryLocation">'+ place.geometry.location + '</div>' +
+                //'<div class="radio-stars">' +
+                //  '<input class="sr-only" id="radio-5" name="radio-star" type="radio" value="5" />' +
+                //  '<label class="radio-star" for="radio-5">5</label>' +
+                //  '<input checked="" class="sr-only" id="radio-4" name="radio-star" type="radio" value="4" />' +
+                //  '<label class="radio-star" for="radio-4">4</label>' +
+                //  '<input class="sr-only" id="radio-3" name="radio-star" type="radio" value="3" />' +
+                //  '<label class="radio-star" for="radio-3">3</label>' +
+                //  '<input class="sr-only" id="radio-2" name="radio-star" type="radio" value="2" />' +
+                //  '<label class="radio-star" for="radio-2">2</label>' +
+                //  '<input class="sr-only" id="radio-1" name="radio-star" type="radio" value="1" />' +
+                //  '<label class="radio-star" for="radio-1">1</label>' +
+                //  '<span class="radio-star-total"></span>' + '</div>' +
                 '</div>';
 
               var infoWindow = new google.maps.InfoWindow({
