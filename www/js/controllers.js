@@ -1,35 +1,49 @@
 angular.module('starter.controllers', [])
 
-  .controller('SignInCtrl', function($scope, $state, UserSession, $ionicPopup, $rootScope) {
+  .controller('RegisterCtrl', function($scope, $state,UserRegistration, $ionicPopup, $rootScope){
     $scope.data = {};
 
-    $scope.signIn = function(user) {
-        var user_session = new UserSession({user: user});
-        user_session.$save(
-          function (data) {
-            window.localStorage['username'] = data.username;
-            window.localStorage['auth_token'] = data.auth_token;
+    $scope.register = function(user){
+      var user_session = new UserRegistration({user: user});
+      console.log(user_session);
+      user_session.$save(
+        function(data) {
+          window.localStorage['username'] = data.username;
+          window.localStorage['auth_token'] = data.auth_token;
 
-            $state.go('tab.map');
-          },
-          function (err) {
-            var error = err["data"]["errors"]["detail"];
-            var confirmPopup = $ionicPopup.alert({
-              title: 'An error occurred',
-              template: error
-            });
-          }
-        );
+          $state.go('tab.map');
+        },
+      function(err) {
+        var error = err["data"]["errors"]["detail"];
+        var confirmPopup = $ionicPopup.alert({
+          title: 'An error occurred',
+          template: error
+        });
+      }
+      );
     };
   })
 
-  .controller('MapCtrl', function($scope, $state, $cordovaGeolocation, $ionicLoading, PeeLocations) {
+  .controller('SignInCtrl', function($scope, $state, UserService) {
+    $scope.signIn = function (user) {
+      UserService.login({user: user});
+    };
+  })
+  //.controller('SignOutCtrl', function($scope, $state, UserService) {
+  //  $scope.signOut = function (){
+  //    console.log("signing out");
+  //    UserService.logout();
+  //  };
+  //})
+
+  .controller('MapCtrl', function($scope, $state, $cordovaGeolocation, $ionicLoading, LocationService, UserService, $rootScope) {
+
   ionic.Platform.ready(function () {
+
     $ionicLoading.show({
       template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
     });
     var options = {timeout: 10000, enableHighAccuracy: true, maximumAge: 0};
-    //alert($cordovaGeolocation);
 
     ionic.Platform.ready(function () {
       $cordovaGeolocation.getCurrentPosition(options).then(function (position) {
@@ -48,7 +62,7 @@ angular.module('starter.controllers', [])
 
         //Wait until the map is loaded
         google.maps.event.addListenerOnce($scope.map, 'idle', function () {
-          var places = PeeLocations.nearbySearch(latLng,$scope.map).then(function(results) {
+          var places = LocationService.nearbySearch(latLng,$scope.map).then(function(results) {
             console.log('success' + results);
             for (var i = 0; i < results.length; i++) {
               var place = results[i];
