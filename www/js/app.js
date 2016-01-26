@@ -7,13 +7,14 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngCordova','ngResource'])
   .constant('SERVER', {
+    //URL: 'https://peebuddy-api.herokuapp.com',
     URL: 'http://localhost:3000',
     CONFIG: {
       headers: {}
     }
   })
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, UserService, $rootScope, $state) {
   $ionicPlatform.ready(function() {
     setTimeout(function() {
       if (navigator.splashscreen){
@@ -33,6 +34,23 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+    //stateChange event
+    $rootScope.$on("$stateChangeStart", function(event, toState, toParams, fromState, fromParams){
+      console.log("state changing");
+      console.log(toState.data.authRequired);
+      console.log(!UserService.isAuthenticated());
+      if (toState.data.authRequired && !UserService.isAuthenticated()){ //Assuming the AuthService holds authentication logic
+        // User isn’t authenticated
+        console.log("user not authenticated!");
+        $state.transitionTo("signIn");
+        event.preventDefault();
+      }
+    });
+
+    $rootScope.signOut = function() {
+      console.log("signing out");
+      UserService.logoff();
+    }
   });
 })
 
@@ -47,10 +65,22 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   // Each state's controller can be found in controllers.js
   $stateProvider
 
-    .state('signin', {
+    .state('register',{
+      url: '/register',
+      templateUrl: 'templates/register.html',
+      controller: 'RegisterCtrl',
+      data: {authRequired: false}
+    })
+    .state('signIn', {
       url: '/sign-in',
       templateUrl: 'templates/sign-in.html',
-      controller: 'SignInCtrl'
+      controller: 'SignInCtrl',
+      data: {authRequired: false}
+    })
+    .state('signOut',{
+      url: '/sign-out',
+      controller: 'SignOutCtrl',
+      data: {authRequired: false}
     })
     .state('forgotpassword', {
       url: '/forgot-password',
@@ -61,13 +91,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     .state('tab', {
     url: '/tab',
     abstract: true,
-    templateUrl: 'templates/tabs.html'
-  })
+    templateUrl: 'templates/tabs.html',
+      data: {authRequired: false}
+    })
 
   // Each tab has its own nav history stack:
 
   .state('tab.map', {
     url: '/map',
+    data: {authRequired: true},
     views: {
       'tab-map': {
         templateUrl: 'templates/tab-map.html',
@@ -78,6 +110,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
   .state('tab.favorites', {
       url: '/favorites',
+      data: {authRequired: true},
       views: {
         'tab-favorites': {
           templateUrl: 'templates/tab-favorites.html',
@@ -87,6 +120,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     })
     .state('tab.chat-detail', {
       url: '/chats/:chatId',
+      data: {authRequired: true},
       views: {
         'tab-chats': {
           templateUrl: 'templates/chat-detail.html',
@@ -97,6 +131,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
   .state('tab.account', {
     url: '/account',
+    data: {authRequired: true},
     views: {
       'tab-account': {
         templateUrl: 'templates/tab-account.html',
@@ -106,7 +141,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   });
 
   // if none of the above states are matched, use this as the fallback
-  //$urlRouterProvider.otherwise('/tab/map');
-  $urlRouterProvider.otherwise('/sign-in');
+  $urlRouterProvider.otherwise('/tab/map');
+  //$urlRouterProvider.otherwise('/sign-in');
 
 });

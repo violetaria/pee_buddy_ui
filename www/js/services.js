@@ -49,24 +49,78 @@ angular.module('starter.services', [])
   };
 })
 
-.factory('UserSession', function($resource) {
-    console.log("user session factory");
-    return $resource("http://localhost:3000/api/v1/users"); // .json");
+.factory('UserService', function($http,SERVER,$window,$state, $ionicPopup, $timeout,$ionicLoading, $ionicHistory) {
+  function isAuthenticated() {
+    var token = $window.sessionStorage.token;
+    console.log("authenticating now... = " + token);
+    SERVER.CONFIG.headers['X-BSS-PeeBuddy']  = token;
+    return !(token === null);
+  }
+
+  function login(user) {
+    $http.post(SERVER.URL + "/api/v1/users", user, SERVER.CONFIG)
+      .success(function (data, status, headers, config) {
+        $window.sessionStorage.token = data.auth_token;
+        SERVER.CONFIG.headers['X-BSS-PeeBuddy'] = data.auth_token;
+        $state.go('tab.map');
+      })
+      .error(function (err) {
+        delete $window.sessionStorage.token;
+        var error = err["errors"]["detail"];
+        var confirmPopup = $ionicPopup.alert({
+          title: 'An error occurred',
+          template: error
+        });
+      });
+  }
+  function register(user){
+    $http.post(SERVER.URL + "/api/v1/users/register", user, SERVER.CONFIG)
+      .success(function (data, status, headers, config) {
+        $window.sessionStorage.token = data.auth_token;
+        SERVER.CONFIG.headers['X-BSS-PeeBuddy'] = data.auth_token;
+        console.log(data);
+        $state.go('tab.map');
+      })
+      .error(function (err) {
+        delete $window.sessionStorage.token;
+        console.log(err);
+        var error = err["errors"]["detail"];
+        var confirmPopup = $ionicPopup.alert({
+          title: 'An error occurred',
+          template: error
+        });
+      });
+  }
+  function logoff(){
+    console.log("deleting stuff");
+    $timeout(function () {
+      $window.sessionStorage.token = null;
+      SERVER.CONFIG.headers['X-BSS-PeeBuddy'] = null;
+      $ionicLoading.hide();
+      $ionicHistory.clearCache();
+      $ionicHistory.clearHistory();
+      $ionicHistory.nextViewOptions({ disableBack: true, historyRoot: true });
+      $state.go('signIn');
+    }, 30);
+  }
+
+  return {
+    isAuthenticated: isAuthenticated,
+    login: login,
+    register: register,
+    logoff: logoff
+  };
 })
 
-.factory('Users',function(){
-    return {
-      signOff: function(){
-        return null;
-
-      },
-      forgotPassword: function(){
-        return null;
-      }
-    }
+.factory('UserSession', function($resource, SERVER) {
+   return $resource(SERVER.URL + "/api/v1/users");
 })
 
-.factory('PeeLocations',function($q) {
+.factory('UserRegistration',function($resource, SERVER){
+  return $resource(SERVER.URL + "/api/v1/users/register");
+})
+
+.factory('LocationService',function($q) {
   return {
     nearbySearch: function(latLng,map){
       var deferred = $q.defer();
