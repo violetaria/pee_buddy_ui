@@ -1,5 +1,5 @@
-<ion-view view-title="Map">
-  <ion-content class="padding">
-    <div id="map" data-tap-disabled="true"></div>
+<ion-view view-title="Map" ng-init="initialize()">
+  <ion-content class="padding" scroll="false">
+    <div id="map" data-tap-disabled="true" compile="locationContent"></div>
   </ion-content>
 </ion-view>
