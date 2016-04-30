@@ -5,7 +5,6 @@ angular.module('starter.controllers', [])
 
     $scope.register = function(user){
       var user_session = new UserRegistration({user: user});
-      console.log(user_session);
       user_session.$save(
         function(data) {
           window.localStorage['username'] = data.username;
@@ -35,7 +34,7 @@ angular.module('starter.controllers', [])
   //  };
   //})
 
-  .controller('MapCtrl', function($scope, $state, $ionicLoading, GoogleMaps, $cordovaGeolocation , LocationService, $compile) { //, $cordovaGeolocation, $ionicLoading, LocationService, $rootScope) {
+  .controller('MapCtrl', function($scope, $state, $ionicLoading, GoogleMaps, $cordovaGeolocation , LocationService, $compile) {
 
     ionic.Platform.ready(function () {
       //GoogleMaps.init($scope);
@@ -73,11 +72,8 @@ angular.module('starter.controllers', [])
           });
 
           google.maps.event.addListener(map, 'idle', function(){
-            //Load the markers
             loadMarkers(map.getBounds().getCenter(), map);
-
           });
-
         }, function(error){
           console.log("Could not get location");
           console.log('code: ' + error.code + '\n' +
@@ -88,7 +84,6 @@ angular.module('starter.controllers', [])
       function loadMarkers(latLng, map, scope){
         var places = LocationService.nearbySearch(latLng,map)
           .then(function(results) {
-            console.log("loading markers");
             var apiPlaces = LocationService.getLocations(results).then(function(results){
               if (results.success == "true")
                 return results.locations;
@@ -97,7 +92,6 @@ angular.module('starter.controllers', [])
             });
             return apiPlaces;
           }).then(function(results){
-            console.log("should be api results");
             console.log(results);
             for (var i = 0; i < results.length; i++) {
               var place = results[i];
@@ -125,7 +119,6 @@ angular.module('starter.controllers', [])
           '<div class="locationName" name="locationName" ng-model="location.name">' + place.name + '</div>' +
           '<div class="locationPlaceId" name="locationPlaceId" ng-model="location.placeId">'+ place.place_id + '</div>' +
           '<div class="locationId" name="locationId" ng-model="location.id">' + place.id + '</div>' +
-          '<div class="ratingLabel">Cleanliness</div>' +
           '<div class="rating">' +
           '<rating ng-model="rating.rate" max="rating.max" ></rating>' +
           '</div>' +
@@ -142,27 +135,30 @@ angular.module('starter.controllers', [])
         console.log(place_info);
 
         google.maps.event.addListener(marker, 'click', function () {
-          //$scope.rating = {rate: place.rating};
-          $scope.rating.rate = 3;
+          console.log(place.rating.average);
+
+          $scope.rating.rate = place.rating.average;
+
+          $scope.location = place;
+          console.log($scope);
 
           infoWindow.setContent(popupContent[0]);
           infoWindow.open(map, this);
-          $scope.location = place;
         });
 
       }
-      $scope.rating = {rate: 3};
 
-      $scope.rating.rate = 3;
-      $scope.rating.max = 5;
+      $scope.rating = {rate: 1, max: 5};
+      //
+      //$scope.rating.rate = 3;
 
       $scope.rate = function(rating, location){
         LocationService.rate(rating, location.id);
       };
 
-      $scope.$watch('rating.rate', function() {
-        console.log('New value: ' + $scope.rating.rate);
-      });
+      //$scope.$watch('rating.rate', function() {
+      //  console.log('New value: ' + $scope.rating.rate);
+      //});
     });
 
 

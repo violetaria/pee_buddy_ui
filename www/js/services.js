@@ -1,60 +1,11 @@
 angular.module('starter.services', [])
 
-.factory('Chats', function() {
-  // Might use a resource here that returns a JSON array
-
-  // Some fake testing data
-  var chats = [{
-    id: 0,
-    name: 'Ben Sparrow',
-    lastText: 'You on your way?',
-    face: 'img/ben.png'
-  }, {
-    id: 1,
-    name: 'Max Lynx',
-    lastText: 'Hey, it\'s me',
-    face: 'img/max.png'
-  }, {
-    id: 2,
-    name: 'Adam Bradleyson',
-    lastText: 'I should buy a boat',
-    face: 'img/adam.jpg'
-  }, {
-    id: 3,
-    name: 'Perry Governor',
-    lastText: 'Look at my mukluks!',
-    face: 'img/perry.png'
-  }, {
-    id: 4,
-    name: 'Mike Harrington',
-    lastText: 'This is wicked good ice cream.',
-    face: 'img/mike.png'
-  }];
-
-  return {
-    all: function() {
-      return chats;
-    },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
-    },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
-        }
-      }
-      return null;
-    }
-  };
-})
-
 .factory('UserService', function($http,SERVER,$window,$state, $ionicPopup, $timeout,$ionicLoading, $ionicHistory) {
   function isAuthenticated() {
     var token = $window.sessionStorage.token;
-    console.log("authenticating now... = " + token);
-    console.log("checking token === null" + (token === null));
-    console.log("checking token === undefined" + (token === undefined));
+    //console.log("authenticating now... = " + token);
+    //console.log("checking token === null" + (token === null));
+    //console.log("checking token === undefined" + (token === undefined));
 
     SERVER.CONFIG.headers = { "X-BSS-PeeBuddy": token };
     return !(token === null || token === undefined);
@@ -81,7 +32,7 @@ angular.module('starter.services', [])
       .success(function (data, status, headers, config) {
         $window.sessionStorage.token = data.auth_token;
         SERVER.CONFIG.headers = { "X-BSS-PeeBuddy": data.auth_token };
-        console.log(data);
+        //console.log(data);
         $state.go('tab.map');
       })
       .error(function (err) {
@@ -95,7 +46,7 @@ angular.module('starter.services', [])
       });
   }
   function logoff(){
-    console.log("deleting stuff");
+//    console.log("deleting stuff");
     $timeout(function () {
       $window.sessionStorage.token = null;
       SERVER.CONFIG.headers['X-BSS-PeeBuddy'] = null;
@@ -313,7 +264,7 @@ angular.module('starter.services', [])
                     location: locations[i].geometry.location,
                     name: locations[i].name });
     }
-    console.log(params);
+//    console.log(params);
     $http({
       method: 'POST',
       url: SERVER.URL + '/api/v1/locations',
@@ -333,7 +284,7 @@ angular.module('starter.services', [])
   function rateLocation(rating, locationId) {
     var deferred = $q.defer();
 
-    console.log(location);
+ //   console.log(location);
     $http({
       method: 'POST',
       url: SERVER.URL + '/api/v1/rate',
